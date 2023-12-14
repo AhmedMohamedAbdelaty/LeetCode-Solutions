@@ -8,35 +8,42 @@ public:
 
     void push(int x)
     {
-        // transfer all elements from s1 to s2
-        while (!s1.empty()) {
-            s2.push(s1.top());
-            s1.pop();
-        }
-        // push new element to s1
         s1.push(x);
-        // transfer all elements from s2 to s1
-        while (!s2.empty()) {
-            s1.push(s2.top());
-            s2.pop();
-        }
     }
 
     int pop()
     {
-        int x = s1.top();
-        s1.pop();
-        return x;
+        if (!s2.empty()) {
+            int x = s2.top();
+            s2.pop();
+            return x;
+        } else {
+            while (!s1.empty()) {
+                s2.push(s1.top());
+                s1.pop();
+            }
+            int x = s2.top();
+            s2.pop();
+            return x;
+        }
     }
 
     int peek()
     {
-        return s1.top();
+        if (!s2.empty()) {
+            return s2.top();
+        } else {
+            while (!s1.empty()) {
+                s2.push(s1.top());
+                s1.pop();
+            }
+            return s2.top();
+        }
     }
 
     bool empty()
     {
-        return s1.empty();
+        return s1.empty() && s2.empty();
     }
 };
 
