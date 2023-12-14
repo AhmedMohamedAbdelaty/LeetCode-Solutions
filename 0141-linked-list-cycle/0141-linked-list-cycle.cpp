@@ -7,19 +7,20 @@
  * };
  */
 class Solution {
-    unordered_map<ListNode*, int> m;
 
 public:
     bool hasCycle(ListNode* head)
     {
-        ListNode* curr = head;
-        while (curr != NULL) {
-            if (m.find(curr) != m.end()) {
-                return true;
-            }
-            m[curr] = 1;
-            curr = curr->next;
+        if (head == NULL || head->next == NULL)
+            return false;
+        ListNode* slow = head;
+        ListNode* fast = head->next;
+        while (slow != fast) {
+            if (fast == NULL || fast->next == NULL)
+                return false;
+            slow = slow->next;
+            fast = fast->next->next;
         }
-        return false;
+        return true;
     }
 };
