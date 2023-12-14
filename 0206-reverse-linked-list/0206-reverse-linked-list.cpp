@@ -12,24 +12,16 @@ class Solution {
 public:
     ListNode* reverseList(ListNode* head)
     {
-        // if the list is empty
-        if (head == nullptr)
+        if (head == nullptr || head->next == nullptr)
             return head;
-
-        // if the list only has one element
-        if (head->next == nullptr)
-            return head;
-
-        ListNode* prev = head;
-        ListNode* curr = head->next;
-        while (curr->next != nullptr) {
-            ListNode* temp = curr->next;
+        ListNode *prev = nullptr, *curr = head, *next = head->next;
+        while (curr != nullptr) {
             curr->next = prev;
             prev = curr;
-            curr = temp;
+            curr = next;
+            if (next != nullptr)
+                next = next->next;
         }
-        curr->next = prev; 
-        head->next = nullptr;
-        return curr;
+        return prev;
     }
 };
