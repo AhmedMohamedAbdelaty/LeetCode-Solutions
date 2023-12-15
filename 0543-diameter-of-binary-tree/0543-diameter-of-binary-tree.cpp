@@ -15,21 +15,16 @@ class Solution {
 public:
     int diameterOfBinaryTree(TreeNode* root)
     {
-        if (root == NULL)
-            return 0;
-        int l = depth(root->left);
-        int r = depth(root->right);
-        mx = max(mx, l + r);
-        diameterOfBinaryTree(root->left);
-        diameterOfBinaryTree(root->right);
+        calc_height(root);
         return mx;
     }
-    int depth(TreeNode* root)
+    int calc_height(TreeNode* root)
     {
-        if (root == NULL)
+        if (root == nullptr)
             return 0;
-        int l = depth(root->left);
-        int r = depth(root->right);
-        return max(l, r) + 1;
+        int left = calc_height(root->left);
+        int right = calc_height(root->right);
+        mx = max(mx, left + right);
+        return max(left, right) + 1;
     }
 };
