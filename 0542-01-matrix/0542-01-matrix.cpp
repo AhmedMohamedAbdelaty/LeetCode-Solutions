@@ -1,38 +1,43 @@
 class Solution {
+    int n, m;
+    vector<vector<bool>> vis;
+    int dx[4] = { 0, 0, -1, 1 };
+    int dy[4] = { -1, 1, 0, 0 };
+
 public:
-    bool isvalid(int i, int j, int m, int n)
-    {
-        if (i == m || j == n || j < 0 || i < 0)
-            return false;
-        return true;
-    }
     vector<vector<int>> updateMatrix(vector<vector<int>>& mat)
     {
-        int m = mat.size(), n = mat[0].size();
-        vector<vector<int>> dis(mat.size(), vector<int>(mat[0].size(), -1));
+        n = mat.size();
+        m = mat[0].size();
+        vis.resize(n, vector<bool>(m, false));
+        vector<vector<int>> ans(n, vector<int>(m, 0));
         queue<pair<int, int>> q;
-        for (int i = 0; i < mat.size(); i++) {
-            for (int j = 0; j < mat[0].size(); j++) {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; j++) {
                 if (mat[i][j] == 0) {
                     q.push({ i, j });
-                    dis[i][j] = 0;
+                    vis[i][j] = true;
                 }
             }
         }
-        vector<vector<int>> dir = { { 1, 0 }, { 0, 1 }, { 0, -1 }, { -1, 0 } };
-
+        int dist = 0;
         while (!q.empty()) {
-            pair<int, int> curr = q.front();
-            q.pop();
-            for (auto& x : dir) {
-                int a = curr.first + x[0];
-                int b = curr.second + x[1];
-                if (isvalid(a, b, m, n) && dis[a][b] == -1) {
-                    q.push({ a, b });
-                    dis[a][b] = dis[curr.first][curr.second] + 1;
+            int sz = q.size();
+            while (sz--) {
+                auto p = q.front(); // {x, y}
+                q.pop();
+                int x = p.first, y = p.second;
+                ans[x][y] = dist;
+                for (int i = 0; i < 4; ++i) {
+                    int nx = x + dx[i], ny = y + dy[i];
+                    if (nx >= 0 && nx < n && ny >= 0 && ny < m && !vis[nx][ny]) {
+                        vis[nx][ny] = true;
+                        q.push({ nx, ny });
+                    }
                 }
             }
+            dist++;
         }
-        return dis;
+        return ans;
     }
 };
