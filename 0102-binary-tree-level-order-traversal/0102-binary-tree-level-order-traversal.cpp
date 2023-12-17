@@ -10,35 +10,30 @@
  * };
  */
 class Solution {
-private:
-    vector<vector<int>> ans;
-    void postorder(TreeNode* root)
+public:
+    vector<vector<int>> levelOrder(TreeNode* root)
     {
+        vector<vector<int>> ans;
+        if (root == nullptr) {
+            return ans;
+        }
         queue<TreeNode*> q;
         q.push(root);
         while (!q.empty()) {
             int sz = q.size();
             vector<int> level;
-            for (int i = 0; i < sz; i++) {
-                TreeNode* node = q.front();
+            while (sz--) {
+                auto x = q.front();
                 q.pop();
-                if (node) {
-                    level.push_back(node->val);
-                    q.push(node->left);
-                    q.push(node->right);
+                if (x->left != nullptr) {
+                    q.push(x->left);
                 }
+                if (x->right != nullptr) {
+                    q.push(x->right);
+                }
+                level.push_back(x->val);
             }
-            if (!level.empty()) {
-                ans.push_back(level);
-            }
-        }
-    }
-
-public:
-    vector<vector<int>> levelOrder(TreeNode* root)
-    {
-        if (root) {
-            postorder(root);
+            ans.push_back(level);
         }
         return ans;
     }
