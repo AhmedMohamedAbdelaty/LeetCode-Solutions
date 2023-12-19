@@ -1,21 +1,35 @@
 class Solution {
+    vector<vector<int>> mem;
+
 public:
     int coinChange(vector<int>& coins, int amount)
     {
-        vector<int> dp(amount + 1, INT_MAX);
-        dp[0] = 0;
-        int n = coins.size();
-        sort(coins.begin(), coins.end());
-        for (int value = 1; value <= amount; value++) {
-            for (int i = 0; i < n; i++) {
-                if (coins[i] > value) {
-                    break;
-                }
-                if (dp[value - coins[i]] != INT_MAX) {
-                    dp[value] = min(dp[value], 1 + dp[value - coins[i]]);
-                }
-            }
+        mem.assign(coins.size() + 1, vector<int>(amount + 1, -1));
+        int ans = countMemo(coins, amount, 0);
+        return ans == 2147483646? -1: ans;
+    }
+    int countMemo(vector<int>& coins, int rem, int idx)
+    {
+        if (rem == 0)
+            return 0;
+        if (idx >= coins.size() || rem < 0)
+            return INT_MAX-1;
+
+        if (~mem[idx][rem]) {
+            return mem[idx][rem];
         }
-        return (dp[amount] == INT_MAX) ? -1 : dp[amount];
+
+        int ans = -1;
+        if (coins[idx] > rem) {
+            int dontTake = countMemo(coins, rem, idx + 1);
+            ans = dontTake;
+            mem[idx][rem] = ans;
+        } else {
+            int takeCoin = 1 + countMemo(coins, rem - coins[idx], idx);
+            int dontTake = countMemo(coins, rem, idx + 1);
+            ans = min(takeCoin, dontTake);
+            mem[idx][rem] = ans;
+        }
+        return mem[idx][rem];
     }
 };
