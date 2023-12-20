@@ -9,22 +9,21 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
-typedef long long int ll;
 class Solution {
 public:
     bool isValidBST(TreeNode* root)
     {
-        return isValidBST_Helper(root, LONG_LONG_MAX, LONG_LONG_MIN);
+        return isValid(root);
     }
-
-    bool isValidBST_Helper(TreeNode* root, ll mx, ll mn)
+    bool isValid(TreeNode* root, long long mn = INT_MIN, long long mx = INT_MAX)
     {
+        // go left, make sure every child is less than the root
+        // go right, make sure every child is bigger than the root
         if (root == nullptr)
             return true;
-
-        if (root->val <= mn || root->val >= mx)
+        if (root->val <= mn || root->val >= mx) {
             return false;
-
-        return isValidBST_Helper(root->left, root->val, mn) && isValidBST_Helper(root->right, mx, root->val);
+        }
+        return isValid(root->left, mn, root->val) && isValid(root->right, root->val, mx);
     }
 };
