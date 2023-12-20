@@ -15,7 +15,7 @@ public:
     {
         return isValid(root);
     }
-    bool isValid(TreeNode* root, long long mn = INT_MIN, long long mx = INT_MAX)
+    bool isValid(TreeNode* root, long long mn = LONG_LONG_MIN, long long mx = LONG_LONG_MAX)
     {
         // go left, make sure every child is less than the root
         // go right, make sure every child is bigger than the root
