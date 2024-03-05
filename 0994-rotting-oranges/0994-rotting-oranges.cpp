@@ -1,76 +1,46 @@
 class Solution {
-    int n, m;
-    bool valid(int x, int y)
+    int n, m, fresh = 0;
+    int dx[4] = { 0, 0, 1, -1 };
+    int dy[4] = { 1, -1, 0, 0 };
+    bool valid(int i, int j)
     {
-        return (x >= 0 && x < n && y >= 0 && y < m);
+        return i >= 0 && i < n && j >= 0 && j < m;
+    }
+    int bfs(vector<vector<int>>& grid, queue<pair<int, int>>& q)
+    {
+        int time = 0;
+        while (!q.empty()) {
+            int sz = q.size();
+            while (sz--) { // a second has passed
+                auto [i, j] = q.front();
+                q.pop();
+                for (int k = 0; k < 4; k++) {
+                    int x = i + dx[k], y = j + dy[k];
+                    if (valid(x, y) && grid[x][y] == 1) {
+						grid[x][y] = 2;
+						q.push({ x, y });
+						fresh--;
+                    }
+                }
+            }
+			if (!q.empty())
+				time++;
+        }
+		return fresh == 0 ? time : -1;
     }
 
 public:
     int orangesRotting(vector<vector<int>>& grid)
     {
-        queue<pair<int, int>> rot;
-        vector<vector<int>> vis(15, vector<int>(15, 0));
-        n = grid.size(),
+        n = grid.size();
         m = grid[0].size();
-        bool freshExists = false;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (grid[i][j] == 2) {
-                    rot.push({ i, j });
-                }
-                if (grid[i][j] == 1) {
-                    freshExists = true;
-                }
-            }
-        }
-        if (!freshExists) // no fresh orange to rot
-            return 0;
-        int ans = 0;
-        while (!rot.empty()) {
-            int sz = rot.size();
-            while (sz--) {
-                auto top = rot.front();
-                int x = top.first, y = top.second;
-                rot.pop();
-                // org: x, y
-                // new point must be valid and not visited and not empty
-                // go right: x+1, y
-                if (valid(x + 1, y) && !vis[x + 1][y] && grid[x + 1][y] != 0 && grid[x + 1][y] != 2) {
-                    rot.push({ x + 1, y });
-                    vis[x + 1][y] = 1;
-                    grid[x + 1][y] = 2;
-                }
-                // go left: x-1, y
-                if (valid(x - 1, y) && !vis[x - 1][y] && grid[x - 1][y] != 0 && grid[x - 1][y] != 2) {
-                    rot.push({ x - 1, y });
-                    vis[x - 1][y] = 1;
-                    grid[x - 1][y] = 2;
-                }
-                // go up: x, y+1
-                if (valid(x, y + 1) && !vis[x][y + 1] && grid[x][y + 1] != 0 && grid[x][y + 1] != 2) {
-                    rot.push({ x, y + 1 });
-                    vis[x][y + 1] = 1;
-                    grid[x][y + 1] = 2;
-                }
-                // go down: x, y-1
-                if (valid(x, y - 1) && !vis[x][y - 1] && grid[x][y - 1] != 0 && grid[x][y - 1] != 2) {
-                    rot.push({ x, y - 1 });
-                    vis[x][y - 1] = 1;
-                    grid[x][y - 1] = 2;
-                }
-            }
-            ans++;
-        }
-        // check if any fresh orange is left
-        bool fresh = false;
-        for (auto& row : grid) {
-            for (auto& cell : row) {
-                if (cell == 1) {
-                    fresh = true;
-                    return -1;
-                }
-            }
-        }
-        return ans - 1;
+        queue<pair<int, int>> q;
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < m; j++)
+                if (grid[i][j] == 2)
+                    q.push({ i, j });
+                else if (grid[i][j] == 1)
+                    fresh++;
+        return bfs(grid, q);
     }
 };
